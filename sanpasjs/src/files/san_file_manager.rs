@@ -1,24 +1,24 @@
-use std::fs::{create_dir, File};
+use std::fs::{self, create_dir, File};
 use std::process;
-use std::thread;
+
+use super::san_const::{sanjaiyan_html_content, SANJAIYAN_PASCAL_CONTENT};
 
 #[derive(Debug)]
 pub struct SanFileManagement {
     san_dir_name: String,
 }
- 
+
 impl SanFileManagement {
-    pub fn create(dir_name: String) -> Self {
+    pub fn create(dir_name: &String) -> Self {
         SanFileManagement {
-            san_dir_name: dir_name,
+            san_dir_name: dir_name.to_string(),
         }
     }
 
-    fn san_create_folders(&self, dir_path: String) {
-        let san_folder_create = create_dir(&dir_path);
-        if san_folder_create.is_err() {
+    fn san_create_folders(&self, dir_path: &String) {
+        if let Err(..) = create_dir(dir_path) {
             eprintln!(
-                "Error: Could not create the {} folder. You can try it manually also.",
+                "Error: Could not create the '{}' folder. You can try it manually also.",
                 dir_path
             );
             process::exit(74);
@@ -27,38 +27,47 @@ impl SanFileManagement {
 
     fn san_create_files(&self) {
         {
-            let mut pascal_file_san = File::create(format!("{}/sanpasjs.pas", self.san_dir_name));
-            if pascal_file_san.is_err() {
+            let pascal_file_path = format!("{}/sanpasjs.pas", self.san_dir_name);
+
+            if let Err(..) = File::create(&pascal_file_path) {
                 eprintln!("Error: Could not create the Pascal file. You can try it manually also.");
                 process::exit(74);
             }
-        };
-
-        {
-            let mut js_file_san = File::create(format!("{}/dist/index.js", self.san_dir_name));
-            if js_file_san.is_err() {
-                eprintln!(
-                    "Error: Could not create the Javascript file. You can try it manually also."
-                );
-                process::exit(74);
+            if let Err(..) = fs::write(&pascal_file_path, SANJAIYAN_PASCAL_CONTENT.as_bytes()) {
+                eprintln!("Failed to write to the pascal file");
             }
         };
 
         {
-            let mut html_file_san = File::create(format!("{}/dist/index.html", self.san_dir_name));
-            if html_file_san.is_err() {
+            let html_file_path = format!("{}/dist/index.html", self.san_dir_name);
+
+            if let Err(..) = File::create(&html_file_path) {
                 eprintln!("Error: Could not create the HTML file. You can try it manually also.");
                 process::exit(74);
             }
+            if let Err(..) = fs::write(
+                &html_file_path,
+                sanjaiyan_html_content(&self.san_dir_name).as_bytes(),
+            ) {
+                eprintln!("Failed to write to the html file");
+            }
         };
+
+        if let Err(..) = File::create(format!("{}/dist/index.js", self.san_dir_name)) {
+            eprintln!("Error: Could not create the Javascript file. You can try it manually also.");
+            process::exit(74);
+        }
     }
 
     pub fn create_folder_and_files_sanjaiyan(&self) {
-        println!("Creating the relevant files and folders.");
-
-        self.san_create_folders(self.san_dir_name.to_string());
-        self.san_create_folders(format!("{}/dist", &self.san_dir_name.to_string()));
+        self.san_create_folders(&self.san_dir_name);
+        self.san_create_folders(&format!("{}/dist", &self.san_dir_name));
 
         self.san_create_files();
+
+        println!(
+            "Goto the project directory by running following command in your CLI -: \n\ncd {:?} ",
+            &self.san_dir_name
+        );
     }
 }

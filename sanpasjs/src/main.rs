@@ -1,7 +1,9 @@
 mod files;
 mod lexer;
 
-use clap::{builder, Arg, Command, ValueHint};
+use std::thread;
+
+use clap::{Arg, Command, ValueHint};
 use logos::Logos;
 
 fn main() {
@@ -14,10 +16,12 @@ fn main() {
             .subcommand(
                 Command::new("new")
                     .short_flag('n')
+                    .alias("create")
                     .arg(
                         Arg::new("name")
                             .required(true)
                             .short('n')
+                            .long("name")
                             .help("Enter your project name."),
                     )
                     .about("Create new project folder with relevant files for quick start."),
@@ -29,6 +33,7 @@ fn main() {
                         Arg::new("name")
                             .required(true)
                             .short('n')
+                            .long("name")
                             .help("Enter your project name."),
                     )
                     .about("Initialize new project folder with relevant files for quick start."),
@@ -36,19 +41,27 @@ fn main() {
             .subcommand(Command::new("compile").short_flag('c').about(
                 "Compile your Pascal program to Javascript which can be ran in web browsers.",
             ))
+            .disable_colored_help(false)
             .get_matches();
 
-    match sanjaiyan_command_line.subcommand() {
-        Some(san_cmd) => {
-            println!("{:?}", &san_cmd.0);
+    if let Some(san_cmd) = sanjaiyan_command_line.subcommand() {
+        match san_cmd.0.to_lowercase().as_str() {
+            "new" | "init" => {
+                if let Some(sanjaiyan_prj_name) = san_cmd.1.get_one::<String>("name") {
+                    let sanjaiyan_project_create =
+                        files::san_file_manager::SanFileManagement::create(sanjaiyan_prj_name);
 
-            match san_cmd.0.to_lowercase().as_str() {
-                "new" | "init" => {
-                    let sanjaiyan_prj_name = san_cmd.1.get_one::<String>("name");
+                    let san_thread = thread::spawn(move || {
+                        sanjaiyan_project_create.create_folder_and_files_sanjaiyan();
+                    });
+
+                    println!("Creating the project named '{:?}' ", &sanjaiyan_prj_name);
+                    println!("Creating the relevant files and folders needed to get started :) ");
+
+                    san_thread.join().unwrap();
                 }
-                _ => {}
             }
+            _ => {}
         }
-        None => {}
     }
 }
