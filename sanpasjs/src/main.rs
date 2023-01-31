@@ -7,42 +7,62 @@ use clap::{Arg, Command, ValueHint};
 use logos::Logos;
 
 fn main() {
-    let sanjaiyan_command_line =
-        Command::new("Sanjaiyan_Pas_Js")
-            .bin_name("sanpasjs")
-            .author("Sanjaiyan")
-            .version("v0.0.3")
-            .about("Compile your Pascal program to Javascript")
-            .subcommand(
-                Command::new("new")
-                    .short_flag('n')
-                    .alias("create")
-                    .arg(
-                        Arg::new("name")
-                            .required(true)
-                            .short('n')
-                            .long("name")
-                            .help("Enter your project name."),
-                    )
-                    .about("Create new project folder with relevant files for quick start."),
-            )
-            .subcommand(
-                Command::new("init")
-                    .short_flag('i')
-                    .arg(
-                        Arg::new("name")
-                            .required(true)
-                            .short('n')
-                            .long("name")
-                            .help("Enter your project name."),
-                    )
-                    .about("Initialize new project folder with relevant files for quick start."),
-            )
-            .subcommand(Command::new("compile").short_flag('c').about(
-                "Compile your Pascal program to Javascript which can be ran in web browsers.",
-            ))
-            .disable_colored_help(false)
-            .get_matches();
+    let sanjaiyan_command_line = Command::new("Sanjaiyan_Pas_Js")
+        .bin_name("sanpasjs")
+        .author("Sanjaiyan")
+        .version("v0.0.3")
+        .about("Compile your Pascal program to Javascript")
+        .subcommand(
+            Command::new("new")
+                .short_flag('n')
+                .alias("create")
+                .arg(
+                    Arg::new("name")
+                        .required(true)
+                        .short('n')
+                        .long("name")
+                        .help("Enter your project name."),
+                )
+                .about("Create new project folder with relevant files for quick start."),
+        )
+        .subcommand(
+            Command::new("init")
+                .short_flag('i')
+                .arg(
+                    Arg::new("name")
+                        .required(true)
+                        .short('n')
+                        .long("name")
+                        .help("Enter your project name."),
+                )
+                .about("Initialize new project folder with relevant files for quick start."),
+        )
+        .subcommand(
+            Command::new("compile")
+                .short_flag('c')
+                .about(
+                    "Compile your Pascal program to Javascript which can be ran in web browsers.",
+                )
+                .arg(
+                    Arg::new("input_file")
+                        .aliases(["pas", "pascal"])
+                        .default_value("./sanpasjs.pas")
+                        .short('i')
+                        .long("input")
+                        .help("Pascal file path needed to be compiled")
+                        .value_hint(ValueHint::FilePath),
+                )
+                .arg(
+                    Arg::new("output_file")
+                        .aliases(["js", "javascript"])
+                        .default_value("./dist/index.js")
+                        .short('o')
+                        .long("output")
+                        .help("Javascript file path where compiled file should be placed.")
+                        .value_hint(ValueHint::FilePath),
+                ),
+        )
+        .get_matches();
 
     if let Some(san_cmd) = sanjaiyan_command_line.subcommand() {
         match san_cmd.0.to_lowercase().as_str() {
@@ -61,6 +81,7 @@ fn main() {
                     san_thread.join().unwrap();
                 }
             }
+            "compile" => {}
             _ => {}
         }
     }
