@@ -4,7 +4,7 @@ mod lexer;
 use std::thread;
 
 use clap::{Arg, Command, ValueHint};
-use logos::Logos;
+use lexer::{san_lex::SanjaiyanPascalCode, san_tokens::SanTokenKinds};
 
 fn main() {
     let sanjaiyan_command_line = Command::new("Sanjaiyan_Pas_Js")
@@ -81,7 +81,25 @@ fn main() {
                     san_thread.join().unwrap();
                 }
             }
-            "compile" => {}
+            "compile" => {
+                let sanjaiyan_input_pascal_file = {
+                    match san_cmd.1.get_one::<String>("input_file") {
+                        Some(san_file) => san_file.to_string(),
+                        None => "./sanpasjs.pas".to_string(),
+                    }
+                };
+
+                let sanjaiyan_input_javascript_file = {
+                    match san_cmd.1.get_one::<String>("output_file") {
+                        Some(san_file) => san_file.to_string(),
+                        None => "./dist/index.js".to_string(),
+                    }
+                };
+
+                let sanjaiyan_pascal_code_struct =
+                    SanjaiyanPascalCode::new(sanjaiyan_input_pascal_file);
+                sanjaiyan_pascal_code_struct.sanjaiyan_organize_tokens();
+            }
             _ => {}
         }
     }

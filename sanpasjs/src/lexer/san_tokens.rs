@@ -11,6 +11,7 @@ fn san_to_number(san_lex: &mut Lexer<SanTokenKinds>) -> Option<f64> {
 fn san_data_type(san_lex: &mut Lexer<SanTokenKinds>) -> Option<String> {
     if let Ok(mut san_data_type_str) = san_lex.slice().parse::<String>() {
         san_data_type_str.replace_range(0..1, "");
+        san_data_type_str.remove(san_data_type_str.len() - 1);
         Some(san_data_type_str)
     } else {
         None
@@ -19,12 +20,14 @@ fn san_data_type(san_lex: &mut Lexer<SanTokenKinds>) -> Option<String> {
 
 #[derive(Logos, Debug, PartialEq, Clone)]
 pub enum SanTokenKinds {
-    #[regex(r"program .*;", ignore(ascii_case))]
+    #[regex(r"program.*;", ignore(ascii_case))]
     PascalProgramStart,
     #[token("end.", ignore(ascii_case))]
     PascalProgramEnd,
+    #[token("begin", ignore(ascii_case))]
+    PascalCodeBlockBegin,
     #[token("end", ignore(ascii_case))]
-    EndOfTheTask,
+    PascalCodeBlockEnd,
 
     #[token("var", ignore(ascii_case))]
     LetDeclare,
@@ -32,6 +35,9 @@ pub enum SanTokenKinds {
     ConstDeclare,
     #[token(":=", ignore(ascii_case))]
     AssignVar,
+
+    #[regex(r":\s*[a-z].*", san_data_type)]
+    DataType(String),
 
     #[token("(", ignore(ascii_case))]
     LeftParen,
@@ -41,6 +47,8 @@ pub enum SanTokenKinds {
     SemiColon,
     #[token(":", ignore(ascii_case))]
     Colon,
+    #[token(",", ignore(ascii_case))]
+    Comma,
 
     #[token("and", ignore(ascii_case))]
     AndOp,
@@ -60,3 +68,5 @@ pub enum SanTokenKinds {
     #[regex(r"[ \t\n\f]+", logos::skip)]
     SanError,
 }
+
+//[program .*;].*/i
