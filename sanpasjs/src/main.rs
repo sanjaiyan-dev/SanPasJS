@@ -89,7 +89,7 @@ fn main() {
                     }
                 };
 
-                let sanjaiyan_input_javascript_file = {
+                let sanjaiyan_output_javascript_file = {
                     match san_cmd.1.get_one::<String>("output_file") {
                         Some(san_file) => san_file.to_string(),
                         None => "./dist/index.js".to_string(),

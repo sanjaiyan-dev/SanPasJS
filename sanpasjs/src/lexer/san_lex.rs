@@ -1,5 +1,10 @@
 use logos::{Lexer, Logos};
-use std::{fs, process};
+use std::{
+    borrow::{Borrow, BorrowMut},
+    fs,
+    mem::take,
+    process,
+};
 
 use super::san_tokens::SanTokenKinds;
 
@@ -28,14 +33,33 @@ impl SanjaiyanPascalCode {
         SanTokenKinds::lexer(&self.pascal_program_code)
     }
 
+    fn san_check_token_pos(
+        &self,
+        pos: usize,
+        san_token_to_check: SanTokenKinds,
+        sanjaiyan_token_collections: &mut Lexer<SanTokenKinds>,
+    ) -> (bool, SanTokenKinds) {
+        if let Some(sanjaiyan_pos_token) = sanjaiyan_token_collections.nth(pos) {
+            if sanjaiyan_pos_token == san_token_to_check {
+                return (true, san_token_to_check);
+            } else {
+                (false, san_token_to_check)
+            }
+        } else {
+            (false, san_token_to_check)
+        }
+    }
+
     pub fn sanjaiyan_organize_tokens(&self) -> Vec<SanTokenKinds> {
         let san_organized_tokens: Vec<SanTokenKinds> = Vec::new();
 
-        let san_tokens_collection = self.san_tokenize().enumerate();
+        let mut san_tokens_collection = self.san_tokenize();
 
-        for san_token in san_tokens_collection {
-            println!("{:?}", san_token.1)
+        for san_token in san_tokens_collection.clone().enumerate() {
+            println!("{:?}", san_token.1);
         }
+
+        print!("{:?}", san_tokens_collection);
 
         san_organized_tokens
     }
