@@ -1,5 +1,5 @@
 use logos::{Lexer, Logos};
-use std::{fs, process};
+use std::{borrow::BorrowMut, fs, process};
 
 use super::san_tokens::SanTokenKinds;
 
@@ -34,45 +34,68 @@ impl SanjaiyanPascalCode {
         san_token_to_check: SanTokenKinds,
         sanjaiyan_token_collections: &mut Lexer<SanTokenKinds>,
     ) -> (bool, SanTokenKinds) {
-        if let Some(sanjaiyan_pos_token) = sanjaiyan_token_collections.nth(pos) {
-            if sanjaiyan_pos_token == san_token_to_check {
-                (true, san_token_to_check)
-            } else {
-                (false, san_token_to_check)
+        match sanjaiyan_token_collections.nth(pos) {
+            Some(sanjaiyan_pos_token) => {
+                if sanjaiyan_pos_token == san_token_to_check {
+                    (true, san_token_to_check)
+                } else {
+                    (false, san_token_to_check)
+                }
             }
-        } else {
-            (false, san_token_to_check)
+            None => (false, san_token_to_check),
         }
     }
 
     pub fn sanjaiyan_organize_tokens(&self) -> Vec<SanTokenKinds> {
-        let san_organized_tokens: Vec<SanTokenKinds> = Vec::new();
+        let mut san_organized_tokens: Vec<SanTokenKinds> = Vec::new();
 
         let mut san_tokens_collection = self.san_tokenize();
 
         for (current_san_pos, current_san_token) in san_tokens_collection.clone().enumerate() {
             match current_san_token {
-                SanTokenKinds::PascalProgramStart => todo!(),
-                SanTokenKinds::PascalProgramEnd => todo!(),
-                SanTokenKinds::PascalCodeBlockBegin => todo!(),
-                SanTokenKinds::PascalCodeBlockEnd => todo!(),
-                SanTokenKinds::LetDeclare => todo!(),
-                SanTokenKinds::ConstDeclare => todo!(),
-                SanTokenKinds::AssignVar => todo!(),
-                SanTokenKinds::DataType(_) => todo!(),
-                SanTokenKinds::LeftParen => todo!(),
-                SanTokenKinds::RightParen => todo!(),
-                SanTokenKinds::SemiColon => todo!(),
-                SanTokenKinds::Colon => todo!(),
-                SanTokenKinds::Comma => todo!(),
-                SanTokenKinds::AndOp => todo!(),
-                SanTokenKinds::OrOp => todo!(),
-                SanTokenKinds::Indentifier(_) => todo!(),
-                SanTokenKinds::Number(_) => todo!(),
-                SanTokenKinds::Text(_) => todo!(),
-                SanTokenKinds::SanError => todo!(),
+                SanTokenKinds::PascalCodeBlockBegin => {
+                    if san_organized_tokens.contains(&SanTokenKinds::PascalCodeMainStart) {
+                        san_organized_tokens.push(SanTokenKinds::PascalCodeMainStart);
+                    } else {
+                        san_organized_tokens.push(SanTokenKinds::PascalCodeBlockBegin);
+                    }
+                }
+                SanTokenKinds::LetDeclare => san_organized_tokens.push(SanTokenKinds::LetDeclare),
+                SanTokenKinds::Indentifier(san_current_ident) => {
+                    san_organized_tokens.push(SanTokenKinds::Indentifier(san_current_ident))
+                }
+                SanTokenKinds::DataType(san_data_type) => {
+                    let (san_check_semicolon_next, ..) = self.san_check_token_pos(
+                        current_san_pos + 1,
+                        SanTokenKinds::SemiColon,
+                        &mut san_tokens_collection,
+                    );
+                    if san_check_semicolon_next {
+                        match san_data_type.to_lowercase().as_str() {
+                            "string" => {
+                                san_organized_tokens.push(SanTokenKinds::AssignVar);
+                                san_organized_tokens.push(SanTokenKinds::Text(" ".to_string()));
+                            }
+                            "integer" | "real" | "number" => {
+                                san_organized_tokens.push(SanTokenKinds::AssignVar);
+                                san_organized_tokens.push(SanTokenKinds::Number(0.00));
+                            }
+                            "char" => {
+                                san_organized_tokens.push(SanTokenKinds::AssignVar);
+                                san_organized_tokens.push(SanTokenKinds::Text(' '.to_string()));
+                            }
+                            _ => {}
+                        }
+                    }
+                }
+
+                _ => {
+                    print!("Came ")
+                }
             }
         }
+
+        println!("{:?}", san_organized_tokens);
 
         san_organized_tokens
     }
