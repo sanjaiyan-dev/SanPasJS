@@ -32,7 +32,7 @@ pub enum SanTokenKinds {
     PascalCodeBlockEnd,
     #[token("procedure", ignore(ascii_case))]
     ProcedureFunc,
-    #[regex(r###"\{.*\}"###, san_to_text)]
+    #[regex(r###"\{.*\.*}"###, san_to_text)]
     Comment(String),
 
     #[token("var", ignore(ascii_case))]
@@ -42,7 +42,7 @@ pub enum SanTokenKinds {
     #[token(":=", ignore(ascii_case))]
     AssignVar,
 
-    #[regex(r":\s*[a-z].*", san_data_type)]
+    #[regex(r":\s*[a-z].*(;|=)", san_data_type)]
     DataType(String),
 
     #[token("(", ignore(ascii_case))]
@@ -109,6 +109,9 @@ pub enum SanTokenKinds {
     RepeatLoop,
     #[token("until", ignore(ascii_case))]
     RepeatLoopUntil,
+
+    #[token("nil", ignore(ascii_case))]
+    NullValue,
 
     #[regex(r"[a-zA-Z_?]+", san_to_text)]
     Indentifier(String),

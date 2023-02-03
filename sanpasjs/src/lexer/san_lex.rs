@@ -1,5 +1,5 @@
 use logos::{Lexer, Logos};
-use std::{borrow::BorrowMut, fs, process};
+use std::{fs, process};
 
 use super::san_tokens::SanTokenKinds;
 
@@ -84,7 +84,10 @@ impl SanjaiyanPascalCode {
                                 san_organized_tokens.push(SanTokenKinds::AssignVar);
                                 san_organized_tokens.push(SanTokenKinds::Text(' '.to_string()));
                             }
-                            _ => {}
+                            _ => {
+                                san_organized_tokens.push(SanTokenKinds::AssignVar);
+                                san_organized_tokens.push(SanTokenKinds::NullValue);
+                            }
                         }
                     }
                 }
