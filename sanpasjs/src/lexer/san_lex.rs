@@ -37,9 +37,9 @@ impl SanjaiyanPascalCode {
         match sanjaiyan_token_collections.nth(pos) {
             Some(sanjaiyan_pos_token) => {
                 if sanjaiyan_pos_token == san_token_to_check {
-                    (true, san_token_to_check)
+                    (true, sanjaiyan_pos_token)
                 } else {
-                    (false, san_token_to_check)
+                    (false, sanjaiyan_pos_token)
                 }
             }
             None => (false, san_token_to_check),
@@ -52,6 +52,8 @@ impl SanjaiyanPascalCode {
         let mut san_tokens_collection = self.san_tokenize();
 
         for (current_san_pos, current_san_token) in san_tokens_collection.clone().enumerate() {
+            println!("{current_san_token:?}");
+
             match current_san_token {
                 SanTokenKinds::PascalCodeBlockBegin => {
                     if san_organized_tokens.contains(&SanTokenKinds::PascalCodeMainStart) {
@@ -60,37 +62,91 @@ impl SanjaiyanPascalCode {
                         san_organized_tokens.push(SanTokenKinds::PascalCodeBlockBegin);
                     }
                 }
-                SanTokenKinds::LetDeclare => san_organized_tokens.push(SanTokenKinds::LetDeclare),
-                SanTokenKinds::Indentifier(san_current_ident) => {
-                    san_organized_tokens.push(SanTokenKinds::Indentifier(san_current_ident))
+                SanTokenKinds::LetDeclare => {
+                    let (san_check_fn_or_procedure_front, _) = self.san_check_token_pos(
+                        current_san_pos - 1,
+                        SanTokenKinds::ProcedureFunc,
+                        &mut san_tokens_collection,
+                    );
+                    if !san_check_fn_or_procedure_front {
+                        san_organized_tokens.push(SanTokenKinds::LetDeclare)
+                    };
                 }
-                SanTokenKinds::DataType(san_data_type) => {
-                    let (san_check_semicolon_next, ..) = self.san_check_token_pos(
+                SanTokenKinds::Indentifier(san_current_ident) => {
+                    let (san_check_readln_fn_front, _) = self.san_check_token_pos(
+                        current_san_pos - 2,
+                        SanTokenKinds::InputReadFunc,
+                        &mut san_tokens_collection,
+                    );
+                    if !san_check_readln_fn_front {
+                        san_organized_tokens.push(SanTokenKinds::Indentifier(san_current_ident));
+                    }
+                }
+
+                SanTokenKinds::DataTypeString => {
+                    let (.., san_next_token) = self.san_check_token_pos(
+                        current_san_pos - 1,
+                        SanTokenKinds::SemiColon,
+                        &mut san_tokens_collection,
+                    );
+                    println!("-:  {san_next_token:?} {current_san_pos:?}wow");
+                    if san_next_token == SanTokenKinds::SemiColon {
+                        san_organized_tokens.push(SanTokenKinds::AssignVar);
+                        san_organized_tokens.push(SanTokenKinds::Text(" ".to_string()));
+                    }
+                }
+                SanTokenKinds::DataTypeNumber => {
+                    let (san_check_semi_colon_nxt, _) = self.san_check_token_pos(
                         current_san_pos + 1,
                         SanTokenKinds::SemiColon,
                         &mut san_tokens_collection,
                     );
-                    if san_check_semicolon_next {
-                        match san_data_type.to_lowercase().as_str() {
-                            "string" => {
-                                san_organized_tokens.push(SanTokenKinds::AssignVar);
-                                san_organized_tokens.push(SanTokenKinds::Text(" ".to_string()));
-                            }
-                            "integer" | "real" | "number" => {
-                                san_organized_tokens.push(SanTokenKinds::AssignVar);
-                                san_organized_tokens.push(SanTokenKinds::Number(0.00));
-                            }
-                            "char" => {
-                                san_organized_tokens.push(SanTokenKinds::AssignVar);
-                                san_organized_tokens.push(SanTokenKinds::Text(' '.to_string()));
-                            }
-                            _ => {
-                                san_organized_tokens.push(SanTokenKinds::AssignVar);
-                                san_organized_tokens.push(SanTokenKinds::NullValue);
-                            }
-                        }
+                    if san_check_semi_colon_nxt {
+                        san_organized_tokens.push(SanTokenKinds::AssignVar);
+                        san_organized_tokens.push(SanTokenKinds::Number(0.00));
                     }
                 }
+                SanTokenKinds::DataTypeBoolean => {
+                    let (san_check_semi_colon_nxt, _) = self.san_check_token_pos(
+                        current_san_pos + 1,
+                        SanTokenKinds::SemiColon,
+                        &mut san_tokens_collection,
+                    );
+                    if san_check_semi_colon_nxt {
+                        san_organized_tokens.push(SanTokenKinds::AssignVar);
+                        san_organized_tokens.push(SanTokenKinds::NullValue);
+                    }
+                }
+                SanTokenKinds::DataTypeArray => {
+                    let (san_check_semi_colon_nxt, _) = self.san_check_token_pos(
+                        current_san_pos + 1,
+                        SanTokenKinds::SemiColon,
+                        &mut san_tokens_collection,
+                    );
+                    if san_check_semi_colon_nxt {
+                        san_organized_tokens.push(SanTokenKinds::AssignVar);
+                        san_organized_tokens.push(SanTokenKinds::NullValue);
+                    }
+                }
+
+                SanTokenKinds::InputReadFunc => {
+                    let san_get_ident = &san_tokens_collection
+                        .nth(current_san_pos + 2)
+                        .unwrap_or(SanTokenKinds::NullValue);
+
+                    if let SanTokenKinds::Indentifier(san_ident_name_read_func) = san_get_ident {
+                        san_organized_tokens.push(SanTokenKinds::Indentifier(
+                            san_ident_name_read_func.to_string(),
+                        ));
+                        san_organized_tokens.push(SanTokenKinds::AssignVar);
+                        san_organized_tokens.push(SanTokenKinds::InputReadFunc);
+                    }
+                }
+                SanTokenKinds::OutputWriteFunc => {
+                    san_organized_tokens.push(SanTokenKinds::OutputWriteFunc)
+                }
+
+                SanTokenKinds::SemiColon => san_organized_tokens.push(SanTokenKinds::SemiColon),
 
                 _ => {
                     print!("Came ")

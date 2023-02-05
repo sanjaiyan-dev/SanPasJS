@@ -42,8 +42,21 @@ pub enum SanTokenKinds {
     #[token(":=", ignore(ascii_case))]
     AssignVar,
 
-    #[regex(r":\s*[a-z].*(;|=)", san_data_type)]
-    DataType(String),
+    //TODO
+    #[token("char", ignore(ascii_case))]
+    #[token("string", ignore(ascii_case))]
+    DataTypeString,
+    #[token("shortint", ignore(ascii_case))]
+    #[token("smallint", ignore(ascii_case))]
+    #[token("integer", ignore(ascii_case))]
+    #[token("longint", ignore(ascii_case))]
+    #[token("real", ignore(ascii_case))]
+    #[token("number", ignore(ascii_case))]
+    DataTypeNumber,
+    #[token("boolean", ignore(ascii_case))]
+    DataTypeBoolean,
+    #[regex(r"array \[.*\] of (real|string|char|integer|number)")]
+    DataTypeArray,
 
     #[token("(", ignore(ascii_case))]
     LeftParen,
@@ -112,6 +125,13 @@ pub enum SanTokenKinds {
 
     #[token("nil", ignore(ascii_case))]
     NullValue,
+
+    #[token("write", ignore(ascii_case))]
+    #[token("writeln", ignore(ascii_case))]
+    OutputWriteFunc,
+    #[token("read", ignore(ascii_case))]
+    #[token("readln", ignore(ascii_case))]
+    InputReadFunc,
 
     #[regex(r"[a-zA-Z_?]+", san_to_text)]
     Indentifier(String),
