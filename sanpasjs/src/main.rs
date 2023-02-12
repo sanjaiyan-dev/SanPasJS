@@ -1,10 +1,13 @@
 mod files;
 mod lexer;
+mod parser;
 
 use std::thread;
 
 use clap::{Arg, Command, ValueHint};
 use lexer::san_lex::SanjaiyanPascalCode;
+
+use crate::parser::san_parser::SanjaiyanPascalTokens;
 
 fn main() {
     let sanjaiyan_command_line = Command::new("Sanjaiyan_Pas_Js")
@@ -96,9 +99,17 @@ fn main() {
                     }
                 };
 
-                let sanjaiyan_pascal_code_struct =
-                    SanjaiyanPascalCode::new(sanjaiyan_input_pascal_file);
-                sanjaiyan_pascal_code_struct.sanjaiyan_organize_tokens();
+                {
+                    let sanjaiyan_pascal_code_struct =
+                        SanjaiyanPascalCode::new(&sanjaiyan_input_pascal_file);
+
+                    let sanjaiyan_pascal_token_parser = SanjaiyanPascalTokens::new(
+                        sanjaiyan_pascal_code_struct.sanjaiyan_organize_tokens(),
+                    );
+
+                    sanjaiyan_pascal_token_parser
+                        .sanjaiyan_write_to_js_file_san(&sanjaiyan_output_javascript_file)
+                }
             }
             _ => {}
         }

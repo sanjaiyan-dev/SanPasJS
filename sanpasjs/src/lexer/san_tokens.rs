@@ -152,5 +152,3 @@ pub enum SanTokenKinds {
     #[regex(r"[ \t\n\f]+", logos::skip)]
     SanError,
 }
-
-//[program .*;].*/i

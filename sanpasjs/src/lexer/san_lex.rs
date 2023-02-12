@@ -4,15 +4,13 @@ use std::{fs, process};
 use super::san_tokens::SanTokenKinds;
 
 pub struct SanjaiyanPascalCode {
-    pascal_file_path: String,
     pascal_program_code: String,
 }
 
 impl SanjaiyanPascalCode {
-    pub fn new(san_file_name: String) -> Self {
-        if let Ok(san_pascal_program) = fs::read_to_string(&san_file_name) {
+    pub fn new(san_file_name: &str) -> Self {
+        if let Ok(san_pascal_program) = fs::read_to_string(san_file_name) {
             SanjaiyanPascalCode {
-                pascal_file_path: san_file_name,
                 pascal_program_code: san_pascal_program,
             }
         } else {
@@ -60,7 +58,7 @@ impl SanjaiyanPascalCode {
                     san_organized_tokens.push(SanTokenKinds::PascalProgramEnd);
                     san_organized_tokens.push(SanTokenKinds::SanPascalNewLine);
                     san_organized_tokens.push(SanTokenKinds::Comment(
-                        "Developed using 'SanPasJs'".to_string(),
+                        "Developed using 'SanPasJs' 🌟✨🌟".to_string(),
                     ));
                     san_organized_tokens.push(SanTokenKinds::SanPascalNewLine);
                 }
@@ -162,6 +160,7 @@ impl SanjaiyanPascalCode {
                         san_organized_tokens.push(SanTokenKinds::ElseStatement);
                     } else {
                         san_organized_tokens.push(SanTokenKinds::SemiColon);
+                        san_organized_tokens.push(SanTokenKinds::SanPascalNewLine);
                         san_organized_tokens.push(SanTokenKinds::ElseStatement);
                     }
                 }
@@ -252,10 +251,6 @@ impl SanjaiyanPascalCode {
         }
 
         println!("{san_organized_tokens:?} \n");
-        println!(
-            "Succesfully compiled the following file-: {}",
-            self.pascal_file_path
-        );
 
         san_organized_tokens
     }
