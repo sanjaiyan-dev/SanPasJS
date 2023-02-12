@@ -1,7 +1,7 @@
 export default {
   title: "SanPasJs",
   description:
-    "Compile your Pascal program to Javascript which can be ran in web browsers 💻🕸💻",
+    "Compile your Pascal program to Javascript program which can be executed in the web browsers 💻🕸💻",
   head: [
     [
       "meta",
