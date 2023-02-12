@@ -1,0 +1,29 @@
+{
+  "name": "sanpasjs-website",
+  "version": "1.0.0",
+  "description": "Documentation for SanPasJs 💻",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sanjaiyan-dev/SanPasJS.git"
+  },
+  "keywords": [
+    "SanPasJs"
+  ],
+  "author": "Sanjaiyan Parthipan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sanjaiyan-dev/SanPasJS/issues"
+  },
+  "homepage": "https://github.com/sanjaiyan-dev/SanPasJS#readme",
+  "devDependencies": {
+    "vitepress": "^1.0.0-alpha.46",
+    "vue": "^3.2.47"
+  }
+}
