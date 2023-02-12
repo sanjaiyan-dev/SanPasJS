@@ -3,7 +3,7 @@ layout: home
 
 hero:
   name: SanPasJs
-  text: Compile your Pascal code to Javascript code which can be ran in the web browsers 💻🕸💻
+  text: Compile your Pascal code to Javascript code which can be run in the web browsers 💻🕸💻
   tagline: CLI to GUI
   image:
     src: /Sanjaiyan_Pascal_To_Js_Logo.png
