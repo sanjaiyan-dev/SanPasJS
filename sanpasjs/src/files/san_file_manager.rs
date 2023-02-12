@@ -18,8 +18,7 @@ impl SanFileManagement {
     fn san_create_folders(&self, dir_path: &String) {
         if let Err(..) = create_dir(dir_path) {
             eprintln!(
-                "Error: Could not create the '{}' folder. You can try it manually also.",
-                dir_path
+                "Error: Could not create the '{dir_path}' folder. You can try it manually also."
             );
             process::exit(74);
         }

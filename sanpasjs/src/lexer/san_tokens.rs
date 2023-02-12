@@ -1,28 +1,18 @@
 use logos::{Lexer, Logos};
 
 fn san_to_text(san_lex: &mut Lexer<SanTokenKinds>) -> Option<String> {
-    Some(san_lex.slice().to_string())
+    Some(san_lex.slice().trim().to_string())
 }
 
 fn san_to_number(san_lex: &mut Lexer<SanTokenKinds>) -> Option<f64> {
     san_lex.slice().parse::<f64>().ok()
 }
 
-fn san_data_type(san_lex: &mut Lexer<SanTokenKinds>) -> Option<String> {
-    if let Ok(mut san_data_type_str) = san_lex.slice().parse::<String>() {
-        san_data_type_str.replace_range(0..1, "");
-        san_data_type_str.remove(san_data_type_str.len() - 1);
-        Some(san_data_type_str)
-    } else {
-        None
-    }
-}
-
 #[derive(Logos, Debug, PartialEq, Clone)]
 pub enum SanTokenKinds {
-    PascalCodeMainStart,
+    SanPascalNewLine,
 
-    #[regex(r"program.*;", ignore(ascii_case))]
+    #[token("program", ignore(ascii_case))]
     PascalProgramStart,
     #[token("end.", ignore(ascii_case))]
     PascalProgramEnd,
@@ -31,8 +21,9 @@ pub enum SanTokenKinds {
     #[token("end", ignore(ascii_case))]
     PascalCodeBlockEnd,
     #[token("procedure", ignore(ascii_case))]
+    #[token("function", ignore(ascii_case))]
     ProcedureFunc,
-    #[regex(r###"\{.*\.*}"###, san_to_text)]
+    #[regex(r###"[\{\.*}].*"###, san_to_text)]
     Comment(String),
 
     #[token("var", ignore(ascii_case))]
@@ -55,13 +46,17 @@ pub enum SanTokenKinds {
     DataTypeNumber,
     #[token("boolean", ignore(ascii_case))]
     DataTypeBoolean,
-    #[regex(r"array \[.*\] of (real|string|char|integer|number)")]
+    #[regex(r###"|array.*"###)]
     DataTypeArray,
 
     #[token("(", ignore(ascii_case))]
     LeftParen,
     #[token(")", ignore(ascii_case))]
     RightParen,
+    #[token("[", ignore(ascii_case))]
+    LeftSqrParen,
+    #[token("]", ignore(ascii_case))]
+    RightSqrParen,
     #[token(";", ignore(ascii_case))]
     SemiColon,
     #[token(":", ignore(ascii_case))]
@@ -81,6 +76,8 @@ pub enum SanTokenKinds {
     Equal,
     #[token("<>", ignore(ascii_case))]
     NotEqual,
+    #[token("~", ignore(ascii_case))]
+    BitNo,
 
     #[token("and", ignore(ascii_case))]
     AndOp,
@@ -132,9 +129,18 @@ pub enum SanTokenKinds {
     #[token("read", ignore(ascii_case))]
     #[token("readln", ignore(ascii_case))]
     InputReadFunc,
+    #[token("html", ignore(ascii_case))]
+    #[token("htmlln", ignore(ascii_case))]
+    #[token("htmln", ignore(ascii_case))]
+    HtmlOutputFunc,
+    #[token("clear", ignore(ascii_case))]
+    #[token("clearln", ignore(ascii_case))]
+    #[token("clean", ignore(ascii_case))]
+    #[token("cleanln", ignore(ascii_case))]
+    HtmlOutputClearFunc,
 
     #[regex(r"[a-zA-Z_?]+", san_to_text)]
-    Indentifier(String),
+    Identifier(String),
 
     #[regex(r"([0-9]+[.])?[0-9]+", san_to_number)]
     Number(f64),

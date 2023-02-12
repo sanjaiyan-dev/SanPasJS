@@ -4,7 +4,7 @@ mod lexer;
 use std::thread;
 
 use clap::{Arg, Command, ValueHint};
-use lexer::{san_lex::SanjaiyanPascalCode, san_tokens::SanTokenKinds};
+use lexer::san_lex::SanjaiyanPascalCode;
 
 fn main() {
     let sanjaiyan_command_line = Command::new("Sanjaiyan_Pas_Js")
@@ -41,7 +41,7 @@ fn main() {
             Command::new("compile")
                 .short_flag('c')
                 .about(
-                    "Compile your Pascal program to Javascript which can be ran in web browsers.",
+                    "Compile your Pascal program to Javascript code which can be executed in the web browsers.",
                 )
                 .arg(
                     Arg::new("input_file")
