@@ -78,6 +78,7 @@ impl SanjaiyanPascalCode {
                 SanTokenKinds::ConstDeclare => {
                     san_organized_tokens.push(SanTokenKinds::ConstDeclare);
                 }
+                SanTokenKinds::AssignVar => san_organized_tokens.push(SanTokenKinds::AssignVar),
                 SanTokenKinds::DataTypeString => {
                     let (san_check_next_semi_colon, ..) = self.san_check_token_pos(
                         &sanjaiyan_token_array_format,
@@ -144,6 +145,26 @@ impl SanjaiyanPascalCode {
                 }
 
                 // If - else Statements
+                SanTokenKinds::IfStatement => {
+                    san_organized_tokens.push(SanTokenKinds::IfStatement);
+                    san_organized_tokens.push(SanTokenKinds::LeftParen);
+                }
+                SanTokenKinds::IfStatementCodeBlock => {
+                    san_organized_tokens.push(SanTokenKinds::RightParen);
+                }
+                SanTokenKinds::ElseStatement => {
+                    let (san_check_before_semicolon, ..) = self.san_check_token_pos(
+                        &sanjaiyan_token_array_format,
+                        san_current_pos - 1,
+                        SanTokenKinds::SemiColon,
+                    );
+                    if san_check_before_semicolon {
+                        san_organized_tokens.push(SanTokenKinds::ElseStatement);
+                    } else {
+                        san_organized_tokens.push(SanTokenKinds::SemiColon);
+                        san_organized_tokens.push(SanTokenKinds::ElseStatement);
+                    }
+                }
 
                 // Loops Statements
                 SanTokenKinds::ForLoop => san_organized_tokens.push(SanTokenKinds::ForLoop),

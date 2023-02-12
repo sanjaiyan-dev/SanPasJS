@@ -133,10 +133,10 @@ pub enum SanTokenKinds {
     #[token("htmlln", ignore(ascii_case))]
     #[token("htmln", ignore(ascii_case))]
     HtmlOutputFunc,
-    #[token("clear", ignore(ascii_case))]
-    #[token("clearln", ignore(ascii_case))]
-    #[token("clean", ignore(ascii_case))]
-    #[token("cleanln", ignore(ascii_case))]
+    #[token("clear()", ignore(ascii_case))]
+    #[token("clearln()", ignore(ascii_case))]
+    #[token("clean()", ignore(ascii_case))]
+    #[token("cleanln()", ignore(ascii_case))]
     HtmlOutputClearFunc,
 
     #[regex(r"[a-zA-Z_?]+", san_to_text)]
