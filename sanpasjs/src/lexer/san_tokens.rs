@@ -12,7 +12,7 @@ fn san_to_number(san_lex: &mut Lexer<SanTokenKinds>) -> Option<f64> {
 pub enum SanTokenKinds {
     SanPascalNewLine,
 
-    #[token("program", ignore(ascii_case))]
+    #[regex(r###"program.*"###, ignore(ascii_case))]
     PascalProgramStart,
     #[token("end.", ignore(ascii_case))]
     PascalProgramEnd,
@@ -147,6 +147,11 @@ pub enum SanTokenKinds {
 
     #[regex(r##""(?:[^"\\]|\\.)*""##, san_to_text)]
     Text(String),
+
+    #[token("true", ignore(ascii_case))]
+    SanTrue,
+    #[token("false", ignore(ascii_case))]
+    SanFalse,
 
     #[error]
     #[regex(r"[ \t\n\f]+", logos::skip)]

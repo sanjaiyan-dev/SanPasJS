@@ -48,11 +48,9 @@ impl SanjaiyanPascalCode {
         for (san_current_pos, san_current_token) in sanjaiyan_token_array_format.iter().enumerate()
         {
             match san_current_token {
-                SanTokenKinds::PascalProgramStart => {
-                    san_organized_tokens.push(SanTokenKinds::PascalProgramStart);
-                }
                 SanTokenKinds::PascalCodeBlockBegin => {
                     san_organized_tokens.push(SanTokenKinds::PascalCodeBlockBegin);
+                    san_organized_tokens.push(SanTokenKinds::SanPascalNewLine);
                 }
                 SanTokenKinds::PascalProgramEnd => {
                     san_organized_tokens.push(SanTokenKinds::PascalProgramEnd);
@@ -64,9 +62,16 @@ impl SanjaiyanPascalCode {
                 }
                 // Variables related
                 SanTokenKinds::LetDeclare => {
+                    let san_num_to_check_before = {
+                        if san_current_pos as isize - 3 <= 0 {
+                            0
+                        } else {
+                            san_current_pos - 3
+                        }
+                    };
                     let (san_check_procedure_before, ..) = self.san_check_token_pos(
                         &sanjaiyan_token_array_format,
-                        san_current_pos - 3,
+                        san_num_to_check_before,
                         SanTokenKinds::ProcedureFunc,
                     );
                     if !san_check_procedure_before {
@@ -85,7 +90,7 @@ impl SanjaiyanPascalCode {
                     );
                     if san_check_next_semi_colon {
                         san_organized_tokens.push(SanTokenKinds::AssignVar);
-                        san_organized_tokens.push(SanTokenKinds::Text(" ".to_string()));
+                        san_organized_tokens.push(SanTokenKinds::Text(r###"" ""###.to_string()));
                     }
                 }
                 SanTokenKinds::DataTypeNumber => {
@@ -217,14 +222,23 @@ impl SanjaiyanPascalCode {
                             san_organized_tokens.push(SanTokenKinds::SanPascalNewLine);
                         }
                     } else {
+                        san_organized_tokens.push(SanTokenKinds::SanPascalNewLine);
                         sanjaiyan_firtst_semicolon_came = true;
                     }
                 }
                 SanTokenKinds::LeftParen => san_organized_tokens.push(SanTokenKinds::LeftParen),
                 SanTokenKinds::RightParen => san_organized_tokens.push(SanTokenKinds::RightParen),
+                SanTokenKinds::LeftSqrParen => {
+                    san_organized_tokens.push(SanTokenKinds::LeftSqrParen);
+                }
+                SanTokenKinds::RightSqrParen => {
+                    san_organized_tokens.push(SanTokenKinds::RightSqrParen);
+                }
                 SanTokenKinds::Comma => san_organized_tokens.push(SanTokenKinds::Comma),
 
                 SanTokenKinds::NullValue => san_organized_tokens.push(SanTokenKinds::NullValue),
+                SanTokenKinds::SanTrue => san_organized_tokens.push(SanTokenKinds::SanTrue),
+                SanTokenKinds::SanFalse => san_organized_tokens.push(SanTokenKinds::SanFalse),
 
                 // Numbers and Strings
                 SanTokenKinds::Identifier(san_ident_name) => {
@@ -240,6 +254,7 @@ impl SanjaiyanPascalCode {
                 SanTokenKinds::Comment(sanjaiyan_comment) => {
                     san_organized_tokens
                         .push(SanTokenKinds::Comment(sanjaiyan_comment.to_string()));
+                    san_organized_tokens.push(SanTokenKinds::SanPascalNewLine);
                 }
 
                 san_missed_tokens => {

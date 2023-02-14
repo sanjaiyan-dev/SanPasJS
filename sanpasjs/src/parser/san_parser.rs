@@ -17,10 +17,61 @@ impl SanjaiyanPascalTokens {
         let mut san_js_code = String::new();
         for san_current_token in &self.sanjaiyan_pas_tokens {
             match san_current_token {
-                SanTokenKinds::PascalProgramStart => san_js_code.push_str("function "),
-                _ => {
-                    todo!();
+                // Special Characters
+                SanTokenKinds::SemiColon => san_js_code.push(';'),
+                SanTokenKinds::SanPascalNewLine => san_js_code.push('\n'),
+                SanTokenKinds::LeftParen => san_js_code.push('('),
+                SanTokenKinds::RightParen => san_js_code.push(')'),
+                SanTokenKinds::LeftSqrParen => san_js_code.push('['),
+                SanTokenKinds::RightSqrParen => san_js_code.push(']'),
+                SanTokenKinds::Comma => san_js_code.push_str(", "),
+
+                SanTokenKinds::PascalProgramStart | SanTokenKinds::ProcedureFunc => {
+                    san_js_code.push_str("function ")
                 }
+                SanTokenKinds::PascalProgramEnd => san_js_code.push_str("};"),
+                SanTokenKinds::PascalCodeBlockBegin => san_js_code.push('{'),
+                SanTokenKinds::PascalCodeBlockEnd => san_js_code.push('}'),
+
+                // Variables
+                SanTokenKinds::LetDeclare => san_js_code.push_str("let "),
+                SanTokenKinds::ConstDeclare => san_js_code.push_str("const "),
+                SanTokenKinds::AssignVar => san_js_code.push_str(" = "),
+
+                // Special Function
+                SanTokenKinds::OutputWriteFunc => san_js_code.push_str("alert"),
+                SanTokenKinds::InputReadFunc => san_js_code.push_str("prompt"),
+                SanTokenKinds::HtmlOutputFunc => san_js_code.push_str("document.write"),
+                SanTokenKinds::HtmlOutputClearFunc => {
+                    san_js_code.push_str("document.body.innerHTML = ''");
+                }
+
+                // Operators
+                SanTokenKinds::Plus => san_js_code.push_str(" + "),
+                SanTokenKinds::Minus => san_js_code.push_str(" - "),
+                SanTokenKinds::Multiply => san_js_code.push_str(" * "),
+                SanTokenKinds::Divide => san_js_code.push_str(" / "),
+                SanTokenKinds::Reminder => san_js_code.push_str(" % "),
+                SanTokenKinds::Equal => san_js_code.push_str(" == "),
+                SanTokenKinds::NotEqual => san_js_code.push_str(" != "),
+                SanTokenKinds::Greater => san_js_code.push_str(" > "),
+                SanTokenKinds::GreaterEqual => san_js_code.push_str(" >= "),
+                SanTokenKinds::Less => san_js_code.push_str(" < "),
+                SanTokenKinds::LessEqual => san_js_code.push_str(" <= "),
+                SanTokenKinds::BitNo => san_js_code.push_str(" ~ "),
+
+                SanTokenKinds::AndOp => san_js_code.push_str(" && "),
+                SanTokenKinds::OrOp => san_js_code.push_str(" || "),
+                SanTokenKinds::NotOp => san_js_code.push_str(" !"),
+
+                // Ident, Strings, Numbers and Comments
+                SanTokenKinds::Identifier(san_ident_name) => san_js_code.push_str(san_ident_name),
+                SanTokenKinds::Text(san_text) => san_js_code.push_str(san_text),
+                SanTokenKinds::Comment(san_comment) => {
+                    san_js_code.push_str(&format!("/* {san_comment} */"))
+                }
+                SanTokenKinds::Number(san_num) => san_js_code.push_str(&san_num.to_string()),
+                _ => {}
             }
         }
 
