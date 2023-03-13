@@ -62,7 +62,6 @@ impl SanjaiyanPascalCode {
                 }
                 SanTokenKinds::PascalCodeBlockEnd => {
                     san_organized_tokens.push(SanTokenKinds::PascalCodeBlockEnd);
-                    san_organized_tokens.push(SanTokenKinds::SanPascalNewLine);
                 }
 
                 SanTokenKinds::ProcedureFunc => {
@@ -142,6 +141,9 @@ impl SanjaiyanPascalCode {
                 SanTokenKinds::HtmlOutputClearFunc => {
                     san_organized_tokens.push(SanTokenKinds::HtmlOutputClearFunc);
                 }
+                SanTokenKinds::TextHtmlOutputFunc => {
+                    san_organized_tokens.push(SanTokenKinds::TextHtmlOutputFunc);
+                }
                 SanTokenKinds::InputReadFunc => {
                     let san_get_ident = sanjaiyan_token_array_format
                         .get(san_current_pos + 2)
@@ -187,8 +189,8 @@ impl SanjaiyanPascalCode {
                     san_organized_tokens.push(SanTokenKinds::RightParen);
                 }
                 SanTokenKinds::ForLoopIncrease => {
-                    let san_for_loop_begin_value = sanjaiyan_token_array_format
-                        .get(san_current_pos - 1)
+                    let san_for_loop_target_var_name = sanjaiyan_token_array_format
+                        .get(san_current_pos - 3)
                         .unwrap_or(&SanTokenKinds::NullValue);
                     let san_for_loop_target_value = sanjaiyan_token_array_format
                         .get(san_current_pos + 1)
@@ -196,12 +198,35 @@ impl SanjaiyanPascalCode {
 
                     san_organized_tokens.push(SanTokenKinds::SemiColon);
                     if let (
-                        SanTokenKinds::Number(san_begin_num),
+                        SanTokenKinds::Identifier(sanjaiyan_loop_var),
                         SanTokenKinds::Number(san_target_num),
-                    ) = (san_for_loop_begin_value, san_for_loop_target_value)
+                    ) = (san_for_loop_target_var_name, san_for_loop_target_value)
                     {
-                        san_organized_tokens.push(SanTokenKinds::Number(*san_begin_num));
+                        san_organized_tokens
+                            .push(SanTokenKinds::Identifier(sanjaiyan_loop_var.to_string()));
                         san_organized_tokens.push(SanTokenKinds::LessEqual);
+                        san_organized_tokens.push(SanTokenKinds::Number(*san_target_num));
+                    }
+                    san_organized_tokens.push(SanTokenKinds::SemiColon);
+                }
+
+                SanTokenKinds::ForLoopDecrease => {
+                    let san_for_loop_target_var_name = sanjaiyan_token_array_format
+                        .get(san_current_pos - 3)
+                        .unwrap_or(&SanTokenKinds::NullValue);
+                    let san_for_loop_target_value = sanjaiyan_token_array_format
+                        .get(san_current_pos + 1)
+                        .unwrap_or(&SanTokenKinds::NullValue);
+
+                    san_organized_tokens.push(SanTokenKinds::SemiColon);
+                    if let (
+                        SanTokenKinds::Identifier(sanjaiyan_loop_var),
+                        SanTokenKinds::Number(san_target_num),
+                    ) = (san_for_loop_target_var_name, san_for_loop_target_value)
+                    {
+                        san_organized_tokens
+                            .push(SanTokenKinds::Identifier(sanjaiyan_loop_var.to_string()));
+                        san_organized_tokens.push(SanTokenKinds::GreaterEqual);
                         san_organized_tokens.push(SanTokenKinds::Number(*san_target_num));
                     }
                     san_organized_tokens.push(SanTokenKinds::SemiColon);
@@ -289,12 +314,33 @@ impl SanjaiyanPascalCode {
                         SanTokenKinds::LoopStatementCodeBlock,
                     );
 
-                    let ..= sanjaiyan_token_array_format;
-                    
-                    if !san_check_next_forloopdo {
-                        san_organized_tokens.push(SanTokenKinds::Number(*sanjaiyan_number));
+                    if san_check_next_forloopdo {
+                        let san_target_var_for_loop = sanjaiyan_token_array_format
+                            .get(san_current_pos - 4)
+                            .unwrap_or(&SanTokenKinds::NullValue);
+
+                        if let SanTokenKinds::Identifier(sanjaiyan_forloop_ident) =
+                            san_target_var_for_loop
+                        {
+                            san_organized_tokens.push(SanTokenKinds::Identifier(
+                                sanjaiyan_forloop_ident.to_string(),
+                            ));
+                            let san_for_loop_type = sanjaiyan_token_array_format
+                                .get(san_current_pos - 1)
+                                .unwrap_or(&SanTokenKinds::NullValue);
+                            if san_for_loop_type == &SanTokenKinds::ForLoopIncrease {
+                                san_organized_tokens.push(SanTokenKinds::Plus);
+                                san_organized_tokens.push(SanTokenKinds::Plus);
+                            }
+                            if san_for_loop_type == &SanTokenKinds::ForLoopDecrease {
+                                san_organized_tokens.push(SanTokenKinds::Minus);
+                                san_organized_tokens.push(SanTokenKinds::Minus);
+                            }
+                        } else {
+                            san_organized_tokens.push(SanTokenKinds::Number(*sanjaiyan_number));
+                        }
                     } else {
- 
+                        san_organized_tokens.push(SanTokenKinds::Number(*sanjaiyan_number));
                     }
                 }
                 SanTokenKinds::Comment(sanjaiyan_comment) => {

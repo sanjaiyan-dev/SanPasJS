@@ -133,6 +133,9 @@ pub enum SanTokenKinds {
     #[token("htmlln", ignore(ascii_case))]
     #[token("htmln", ignore(ascii_case))]
     HtmlOutputFunc,
+    #[token("text", ignore(ascii_case))]
+    #[token("textln", ignore(ascii_case))]
+    TextHtmlOutputFunc,
     #[token("clear()", ignore(ascii_case))]
     #[token("clearln()", ignore(ascii_case))]
     #[token("clean()", ignore(ascii_case))]

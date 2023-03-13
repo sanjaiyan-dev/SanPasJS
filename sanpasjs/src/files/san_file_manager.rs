@@ -32,7 +32,7 @@ impl SanFileManagement {
                 eprintln!("Error: Could not create the Pascal file. You can try it manually also.");
                 process::exit(74);
             }
-            if let Err(..) = fs::write(&pascal_file_path, SANJAIYAN_PASCAL_CONTENT.as_bytes()) {
+            if let Err(..) = fs::write(&pascal_file_path, SANJAIYAN_PASCAL_CONTENT) {
                 eprintln!("Failed to write to the pascal file");
             }
         };

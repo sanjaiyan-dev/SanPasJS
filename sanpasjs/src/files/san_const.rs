@@ -16,7 +16,7 @@ pub fn sanjaiyan_html_content(san_project_name: &String) -> String {
     )
 }
 
-pub const SANJAIYAN_PASCAL_CONTENT: &str = r###"program SanPasJs(input, output);
+pub const SANJAIYAN_PASCAL_CONTENT: &[u8; 122] = br###"program SanPasJs(input, output);
 var name: string;
 begin
   name := "SanPasJs";

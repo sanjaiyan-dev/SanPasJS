@@ -41,14 +41,19 @@ impl SanjaiyanPascalTokens {
                 // Special Function
                 SanTokenKinds::OutputWriteFunc => san_js_code.push_str("alert"),
                 SanTokenKinds::InputReadFunc => san_js_code.push_str("prompt"),
-                SanTokenKinds::HtmlOutputFunc => san_js_code.push_str("document.write"),
+                SanTokenKinds::HtmlOutputFunc => {
+                    san_js_code.push_str("document.body.innerHTML += ");
+                }
+                SanTokenKinds::TextHtmlOutputFunc => {
+                    san_js_code.push_str("document.body.innerText += ");
+                }
                 SanTokenKinds::HtmlOutputClearFunc => {
                     san_js_code.push_str("document.body.innerHTML = ''");
                 }
 
                 // Operators
-                SanTokenKinds::Plus => san_js_code.push_str(" + "),
-                SanTokenKinds::Minus => san_js_code.push_str(" - "),
+                SanTokenKinds::Plus => san_js_code.push('+'),
+                SanTokenKinds::Minus => san_js_code.push('-'),
                 SanTokenKinds::Multiply => san_js_code.push_str(" * "),
                 SanTokenKinds::Divide => san_js_code.push_str(" / "),
                 SanTokenKinds::Reminder => san_js_code.push_str(" % "),
@@ -58,11 +63,17 @@ impl SanjaiyanPascalTokens {
                 SanTokenKinds::GreaterEqual => san_js_code.push_str(" >= "),
                 SanTokenKinds::Less => san_js_code.push_str(" < "),
                 SanTokenKinds::LessEqual => san_js_code.push_str(" <= "),
-                SanTokenKinds::BitNo => san_js_code.push_str(" ~ "),
+                SanTokenKinds::BitNo => san_js_code.push_str(" ~"),
 
                 SanTokenKinds::AndOp => san_js_code.push_str(" && "),
                 SanTokenKinds::OrOp => san_js_code.push_str(" || "),
                 SanTokenKinds::NotOp => san_js_code.push_str(" !"),
+
+                //Conditionals
+                SanTokenKinds::IfStatement => san_js_code.push_str("if"),
+
+                // Loops
+                SanTokenKinds::ForLoop => san_js_code.push_str("for"),
 
                 // Ident, Strings, Numbers and Comments
                 SanTokenKinds::Identifier(san_ident_name) => san_js_code.push_str(san_ident_name),
@@ -70,7 +81,9 @@ impl SanjaiyanPascalTokens {
                 SanTokenKinds::Comment(san_comment) => {
                     san_js_code.push_str(&format!("/* {san_comment} */"))
                 }
-                SanTokenKinds::Number(san_num) => san_js_code.push_str(&san_num.to_string()),
+                SanTokenKinds::Number(san_num) => {
+                    san_js_code.push_str(&format!("parseFloat({san_num})"))
+                }
                 _ => {}
             }
         }
