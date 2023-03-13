@@ -87,28 +87,28 @@ fn main() {
             "compile" => {
                 let sanjaiyan_input_pascal_file = {
                     match san_cmd.1.get_one::<String>("input_file") {
-                        Some(san_file) => san_file.to_string(),
-                        None => "./sanpasjs.pas".to_string(),
+                        Some(san_file) => san_file,
+                        None => "./sanpasjs.pas",
                     }
                 };
 
                 let sanjaiyan_output_javascript_file = {
                     match san_cmd.1.get_one::<String>("output_file") {
-                        Some(san_file) => san_file.to_string(),
-                        None => "./dist/index.js".to_string(),
+                        Some(san_file) => san_file,
+                        None => "./dist/index.js",
                     }
                 };
 
                 {
                     let sanjaiyan_pascal_code_struct =
-                        SanjaiyanPascalCode::new(&sanjaiyan_input_pascal_file);
+                        SanjaiyanPascalCode::new(sanjaiyan_input_pascal_file);
 
                     let sanjaiyan_pascal_token_parser = SanjaiyanPascalTokens::new(
                         sanjaiyan_pascal_code_struct.sanjaiyan_organize_tokens(),
                     );
 
                     sanjaiyan_pascal_token_parser
-                        .sanjaiyan_write_to_js_file_san(&sanjaiyan_output_javascript_file)
+                        .sanjaiyan_write_to_js_file_san(sanjaiyan_output_javascript_file)
                 }
             }
             _ => {}

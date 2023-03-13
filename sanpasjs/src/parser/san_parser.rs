@@ -95,7 +95,7 @@ impl SanjaiyanPascalTokens {
         let sanjaiyan_js_code = self.sanjaiyan_parser();
         if let Err(..) = fs::write(san_file_to_write, sanjaiyan_js_code.as_bytes()) {
             println!("Oops! Failed to write the following Javascript code to the output file :(");
-            println!("\n {sanjaiyan_js_code}");
+            println!("\n{sanjaiyan_js_code}");
         } else {
             println!(
                 r#"Sucessfully compiled the Pascal file to the following Javascript file-: "{san_file_to_write}"."#
