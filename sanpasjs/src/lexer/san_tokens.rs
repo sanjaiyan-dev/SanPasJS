@@ -91,6 +91,7 @@ pub enum SanTokenKinds {
     #[token("-", ignore(ascii_case))]
     Minus,
     #[token("*", ignore(ascii_case))]
+    #[token("mul", ignore(ascii_case))]
     Multiply,
     #[token("/", ignore(ascii_case))]
     #[token("div", ignore(ascii_case))]

@@ -43,7 +43,9 @@ impl SanjaiyanPascalCode {
     pub fn sanjaiyan_organize_tokens(&self) -> Vec<SanTokenKinds> {
         let mut san_organized_tokens = Vec::new();
         let sanjaiyan_token_array_format = self.san_tokenize().collect::<Vec<_>>();
+
         let mut sanjaiyan_firtst_semicolon_came = false;
+        let mut sanjaiyan_current_output_func = false;
 
         for (san_current_pos, san_current_token) in sanjaiyan_token_array_format.iter().enumerate()
         {
@@ -133,6 +135,7 @@ impl SanjaiyanPascalCode {
                 }
                 //Special Functions
                 SanTokenKinds::OutputWriteFunc => {
+                    sanjaiyan_current_output_func = true;
                     san_organized_tokens.push(SanTokenKinds::OutputWriteFunc);
                 }
                 SanTokenKinds::HtmlOutputFunc => {
@@ -285,8 +288,24 @@ impl SanjaiyanPascalCode {
                         sanjaiyan_firtst_semicolon_came = true;
                     }
                 }
-                SanTokenKinds::LeftParen => san_organized_tokens.push(SanTokenKinds::LeftParen),
-                SanTokenKinds::RightParen => san_organized_tokens.push(SanTokenKinds::RightParen),
+                SanTokenKinds::LeftParen => {
+                    san_organized_tokens.push(SanTokenKinds::LeftParen);
+                    let (san_check_before_output_func, ..) = self.san_check_token_pos(
+                        &sanjaiyan_token_array_format,
+                        san_current_pos - 1,
+                        SanTokenKinds::OutputWriteFunc,
+                    );
+                    if san_check_before_output_func {
+                        san_organized_tokens.push(SanTokenKinds::LeftSqrParen);
+                    }
+                }
+                SanTokenKinds::RightParen => {
+                    if sanjaiyan_current_output_func {
+                        san_organized_tokens.push(SanTokenKinds::RightSqrParen);
+                        sanjaiyan_current_output_func = false;
+                    }
+                    san_organized_tokens.push(SanTokenKinds::RightParen);
+                }
                 SanTokenKinds::LeftSqrParen => {
                     san_organized_tokens.push(SanTokenKinds::LeftSqrParen);
                 }

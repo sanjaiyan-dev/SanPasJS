@@ -1,4 +1,7 @@
-use std::fs;
+use std::{
+    fs::{self, File},
+    io::ErrorKind,
+};
 
 use crate::lexer::san_tokens::SanTokenKinds;
 
@@ -93,9 +96,27 @@ impl SanjaiyanPascalTokens {
 
     pub fn sanjaiyan_write_to_js_file_san(&self, san_file_to_write: &str) {
         let sanjaiyan_js_code = self.sanjaiyan_parser();
-        if let Err(..) = fs::write(san_file_to_write, sanjaiyan_js_code.as_bytes()) {
-            println!("Oops! Failed to write the following Javascript code to the output file :(");
-            println!("\n{sanjaiyan_js_code}");
+        if let Err(san_err) = fs::write(san_file_to_write, sanjaiyan_js_code.as_bytes()) {
+            if san_err.kind() == ErrorKind::NotFound {
+                match File::create(san_file_to_write) {
+                    Ok(..) => {
+                        if let Err(..) = fs::write(san_file_to_write, sanjaiyan_js_code.as_bytes())
+                        {
+                            eprintln!("Oops! Failed to write the following Javascript code to the output file :(");
+                            println!("\n{sanjaiyan_js_code}");
+                        }
+                    }
+                    Err(..) => {
+                        eprintln!("Oops! Failed to write the following Javascript code to the output file :(");
+                        println!("\n{sanjaiyan_js_code}");
+                    }
+                }
+            } else {
+                eprintln!(
+                    "Oops! Failed to write the following Javascript code to the output file :("
+                );
+                println!("\n{sanjaiyan_js_code}");
+            }
         } else {
             println!(
                 r#"Sucessfully compiled the Pascal file to the following Javascript file-: "{san_file_to_write}"."#
