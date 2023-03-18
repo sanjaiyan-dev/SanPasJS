@@ -6,7 +6,6 @@ use super::san_tokens::SanTokenKinds;
 pub struct SanjaiyanPascalCode {
     pascal_program_code: String,
 }
-
 impl SanjaiyanPascalCode {
     pub fn new(san_file_name: &str) -> Self {
         if let Ok(san_pascal_program) = fs::read_to_string(san_file_name) {
@@ -44,13 +43,16 @@ impl SanjaiyanPascalCode {
         let mut san_organized_tokens = Vec::new();
         let sanjaiyan_token_array_format = self.san_tokenize().collect::<Vec<_>>();
 
-        let mut sanjaiyan_firtst_semicolon_came = false;
+        let mut sanjaiyan_first_semicolon_came = false;
         let mut sanjaiyan_current_output_func = false;
+        let mut sanjaiyan_repeat_until_inside_loop = false;
 
         for (san_current_pos, san_current_token) in sanjaiyan_token_array_format.iter().enumerate()
         {
             match san_current_token {
                 SanTokenKinds::PascalCodeBlockBegin => {
+                    san_organized_tokens.push(SanTokenKinds::SanPascalNewLine);
+
                     san_organized_tokens.push(SanTokenKinds::PascalCodeBlockBegin);
                     san_organized_tokens.push(SanTokenKinds::SanPascalNewLine);
                 }
@@ -139,12 +141,14 @@ impl SanjaiyanPascalCode {
                     san_organized_tokens.push(SanTokenKinds::OutputWriteFunc);
                 }
                 SanTokenKinds::HtmlOutputFunc => {
+                    sanjaiyan_current_output_func = true;
                     san_organized_tokens.push(SanTokenKinds::HtmlOutputFunc);
                 }
                 SanTokenKinds::HtmlOutputClearFunc => {
                     san_organized_tokens.push(SanTokenKinds::HtmlOutputClearFunc);
                 }
                 SanTokenKinds::TextHtmlOutputFunc => {
+                    sanjaiyan_current_output_func = true;
                     san_organized_tokens.push(SanTokenKinds::TextHtmlOutputFunc);
                 }
                 SanTokenKinds::InputReadFunc => {
@@ -177,7 +181,6 @@ impl SanjaiyanPascalCode {
                     if san_check_before_semicolon {
                         san_organized_tokens.push(SanTokenKinds::ElseStatement);
                     } else {
-                        san_organized_tokens.push(SanTokenKinds::SemiColon);
                         san_organized_tokens.push(SanTokenKinds::SanPascalNewLine);
                         san_organized_tokens.push(SanTokenKinds::ElseStatement);
                     }
@@ -235,8 +238,33 @@ impl SanjaiyanPascalCode {
                     san_organized_tokens.push(SanTokenKinds::SemiColon);
                 }
 
+                SanTokenKinds::WhileLoop => {
+                    san_organized_tokens.push(SanTokenKinds::WhileLoop);
+                    san_organized_tokens.push(SanTokenKinds::LeftParen);
+                }
+                SanTokenKinds::RepeatLoop => {
+                    san_organized_tokens.push(SanTokenKinds::RepeatLoop);
+                    san_organized_tokens.push(SanTokenKinds::PascalCodeBlockBegin);
+                    san_organized_tokens.push(SanTokenKinds::SanPascalNewLine);
+                }
+                SanTokenKinds::RepeatLoopUntil => {
+                    sanjaiyan_repeat_until_inside_loop = true;
+                    san_organized_tokens.push(SanTokenKinds::SanPascalNewLine);
+                    san_organized_tokens.push(SanTokenKinds::PascalCodeBlockEnd);
+                    san_organized_tokens.push(SanTokenKinds::RepeatLoopUntil);
+                    san_organized_tokens.push(SanTokenKinds::LeftParen);
+                    san_organized_tokens.push(SanTokenKinds::NotOp);
+                    san_organized_tokens.push(SanTokenKinds::LeftParen);
+                }
+
                 //Operators
-                SanTokenKinds::Plus => san_organized_tokens.push(SanTokenKinds::Plus),
+                SanTokenKinds::Plus => {
+                    san_organized_tokens.push(SanTokenKinds::Multiply);
+                    san_organized_tokens.push(SanTokenKinds::Number(1.00));
+                    san_organized_tokens.push(SanTokenKinds::Plus);
+                    san_organized_tokens.push(SanTokenKinds::Number(1.00));
+                    san_organized_tokens.push(SanTokenKinds::Multiply);
+                }
                 SanTokenKinds::Minus => san_organized_tokens.push(SanTokenKinds::Minus),
                 SanTokenKinds::Multiply => san_organized_tokens.push(SanTokenKinds::Multiply),
                 SanTokenKinds::Divide => san_organized_tokens.push(SanTokenKinds::Divide),
@@ -278,14 +306,19 @@ impl SanjaiyanPascalCode {
                         san_current_pos + 1,
                         SanTokenKinds::PascalCodeBlockBegin,
                     );
-                    if sanjaiyan_firtst_semicolon_came {
+                    if sanjaiyan_first_semicolon_came {
                         if !san_next_begin_statement {
+                            if sanjaiyan_repeat_until_inside_loop {
+                                san_organized_tokens.push(SanTokenKinds::RightParen);
+                                san_organized_tokens.push(SanTokenKinds::RightParen);
+                            }
                             san_organized_tokens.push(SanTokenKinds::SemiColon);
                             san_organized_tokens.push(SanTokenKinds::SanPascalNewLine);
+                            sanjaiyan_repeat_until_inside_loop = false;
                         }
                     } else {
                         san_organized_tokens.push(SanTokenKinds::SanPascalNewLine);
-                        sanjaiyan_firtst_semicolon_came = true;
+                        sanjaiyan_first_semicolon_came = true;
                     }
                 }
                 SanTokenKinds::LeftParen => {
@@ -295,13 +328,27 @@ impl SanjaiyanPascalCode {
                         san_current_pos - 1,
                         SanTokenKinds::OutputWriteFunc,
                     );
-                    if san_check_before_output_func {
+                    let (san_check_before_htmloutput_func, ..) = self.san_check_token_pos(
+                        &sanjaiyan_token_array_format,
+                        san_current_pos - 1,
+                        SanTokenKinds::HtmlOutputFunc,
+                    );
+                    let (san_check_before_textoutput_func, ..) = self.san_check_token_pos(
+                        &sanjaiyan_token_array_format,
+                        san_current_pos - 1,
+                        SanTokenKinds::TextHtmlOutputFunc,
+                    );
+                    if san_check_before_output_func
+                        | san_check_before_htmloutput_func
+                        | san_check_before_textoutput_func
+                    {
                         san_organized_tokens.push(SanTokenKinds::LeftSqrParen);
                     }
                 }
                 SanTokenKinds::RightParen => {
                     if sanjaiyan_current_output_func {
                         san_organized_tokens.push(SanTokenKinds::RightSqrParen);
+                        san_organized_tokens.push(SanTokenKinds::SanPascalOutputFmt);
                         sanjaiyan_current_output_func = false;
                     }
                     san_organized_tokens.push(SanTokenKinds::RightParen);

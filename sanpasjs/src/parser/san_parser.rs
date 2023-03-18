@@ -53,6 +53,9 @@ impl SanjaiyanPascalTokens {
                 SanTokenKinds::HtmlOutputClearFunc => {
                     san_js_code.push_str("document.body.innerHTML = ''");
                 }
+                SanTokenKinds::SanPascalOutputFmt => {
+                    san_js_code.push_str(".join('')");
+                }
 
                 // Operators
                 SanTokenKinds::Plus => san_js_code.push('+'),
@@ -74,9 +77,14 @@ impl SanjaiyanPascalTokens {
 
                 //Conditionals
                 SanTokenKinds::IfStatement => san_js_code.push_str("if"),
+                SanTokenKinds::ElseStatement => san_js_code.push_str("else "),
 
                 // Loops
                 SanTokenKinds::ForLoop => san_js_code.push_str("for"),
+                SanTokenKinds::WhileLoop | SanTokenKinds::RepeatLoopUntil => {
+                    san_js_code.push_str("while ");
+                }
+                SanTokenKinds::RepeatLoop => san_js_code.push_str("do"),
 
                 // Ident, Strings, Numbers and Comments
                 SanTokenKinds::Identifier(san_ident_name) => san_js_code.push_str(san_ident_name),

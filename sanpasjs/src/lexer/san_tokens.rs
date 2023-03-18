@@ -11,6 +11,7 @@ fn san_to_number(san_lex: &mut Lexer<SanTokenKinds>) -> Option<f64> {
 #[derive(Logos, Debug, PartialEq, Clone)]
 pub enum SanTokenKinds {
     SanPascalNewLine,
+    SanPascalOutputFmt,
 
     #[regex(r###"program.*"###, ignore(ascii_case))]
     PascalProgramStart,
@@ -150,6 +151,7 @@ pub enum SanTokenKinds {
     Number(f64),
 
     #[regex(r##""(?:[^"\\]|\\.)*""##, san_to_text)]
+    #[regex(r##"'(?:[^'\\]|\\.)*'"##, san_to_text)]
     Text(String),
 
     #[token("true", ignore(ascii_case))]
