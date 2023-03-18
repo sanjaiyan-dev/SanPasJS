@@ -1,5 +1,6 @@
 ---
 layout: page
+title: Team
 ---
 
 <script setup>

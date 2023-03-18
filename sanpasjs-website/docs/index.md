@@ -11,10 +11,10 @@ hero:
   actions:
     - theme: brand
       text: Get Started
-      link: /guide/what-is-sanpasjs
+      link: /guides/what-is-sanpasjs
     - theme: alt
-      text: Follow on Instagram
-      link: https://instagram.com/sanjaiyan_dev
+      text: Install
+      link: /download
 
 features:
   - icon: 🛠

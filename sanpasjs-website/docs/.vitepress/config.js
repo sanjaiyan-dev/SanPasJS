@@ -1,3 +1,29 @@
+const sanjaiyanGuidesSideBar = [
+  {
+    text: "Introduction",
+    items: [
+      { text: "Overview", link: "/guides/what-is-sanpasjs" },
+      {
+        text: "Installation",
+        items: [
+          {
+            text: "Basics",
+            link: "/guides/installation/index",
+          },
+          {
+            text: "Windows",
+            link: "/guides/installation/windows",
+          },
+          {
+            text: "Linux",
+            link: "/guides/installation/linux",
+          },
+        ],
+      },
+    ],
+  },
+];
+
 export default {
   title: "SanPasJs",
   description:
@@ -16,7 +42,11 @@ export default {
     nav: [
       { text: "Home", link: "/" },
       { text: "Team", link: "/team" },
+      { text: "Download", link: "/download" },
     ],
+    sidebar: {
+      "/guides/": sanjaiyanGuidesSideBar,
+    },
     socialLinks: [
       { icon: "instagram", link: "https://instagram.com/sanjaiyan_dev" },
     ],
