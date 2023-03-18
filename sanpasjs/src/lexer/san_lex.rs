@@ -443,8 +443,6 @@ impl SanjaiyanPascalCode {
             }
         }
 
-        println!("{san_organized_tokens:?} \n");
-
         san_organized_tokens
     }
 }
