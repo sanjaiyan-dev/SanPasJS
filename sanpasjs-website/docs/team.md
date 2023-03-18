@@ -16,7 +16,6 @@ const members = [
     title: 'Creator',
     links: [
       { icon: "instagram", link: "https://instagram.com/sanjaiyan_dev" },
-      { icon: "github", link: "https://github.com/sanjaiyan-dev" },
     ]
   },
 ]

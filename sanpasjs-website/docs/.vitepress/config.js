@@ -18,7 +18,6 @@ export default {
       { text: "Team", link: "/team" },
     ],
     socialLinks: [
-      { icon: "github", link: "https://github.com/sanjaiyan-dev/SanPasJs" },
       { icon: "instagram", link: "https://instagram.com/sanjaiyan_dev" },
     ],
   },

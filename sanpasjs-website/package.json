@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/sanjaiyan-dev/SanPasJS#readme",
   "devDependencies": {
-    "vitepress": "^1.0.0-alpha.46",
+    "vitepress": "^1.0.0-alpha.60",
     "vue": "^3.2.47"
   }
 }
