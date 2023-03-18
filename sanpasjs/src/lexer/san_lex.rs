@@ -155,10 +155,30 @@ impl SanjaiyanPascalCode {
                     let san_get_ident = sanjaiyan_token_array_format
                         .get(san_current_pos + 2)
                         .unwrap_or(&SanTokenKinds::NullValue);
+                    let (san_next_have_sqr_left_paren, ..) = self.san_check_token_pos(
+                        &sanjaiyan_token_array_format,
+                        san_current_pos + 3,
+                        SanTokenKinds::LeftSqrParen,
+                    );
 
                     if let SanTokenKinds::Identifier(san_input_ident_name) = san_get_ident {
                         san_organized_tokens
                             .push(SanTokenKinds::Identifier(san_input_ident_name.to_string()));
+
+                        if san_next_have_sqr_left_paren {
+                            let san_get_array_ident = sanjaiyan_token_array_format
+                                .get(san_current_pos + 4)
+                                .unwrap_or(&SanTokenKinds::NullValue);
+                            san_organized_tokens.push(SanTokenKinds::LeftSqrParen);
+                            if let SanTokenKinds::Identifier(sanjaiyan_array_locator) =
+                                san_get_array_ident
+                            {
+                                san_organized_tokens.push(SanTokenKinds::Identifier(
+                                    sanjaiyan_array_locator.to_string(),
+                                ));
+                            }
+                            san_organized_tokens.push(SanTokenKinds::RightSqrParen);
+                        }
                         san_organized_tokens.push(SanTokenKinds::AssignVar);
                         san_organized_tokens.push(SanTokenKinds::InputReadFunc);
                     }

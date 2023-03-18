@@ -95,6 +95,10 @@ impl SanjaiyanPascalTokens {
                 SanTokenKinds::Number(san_num) => {
                     san_js_code.push_str(&format!("parseFloat({san_num})"))
                 }
+                SanTokenKinds::SanTrue => san_js_code.push_str("true"),
+                SanTokenKinds::SanFalse => san_js_code.push_str("false"),
+                SanTokenKinds::NullValue => san_js_code.push_str("null"),
+
                 _ => {}
             }
         }
