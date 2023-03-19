@@ -41,6 +41,7 @@ export default {
     logo: "/Sanjaiyan_Pascal_To_Js_Logo.png",
     nav: [
       { text: "Home", link: "/" },
+      { text: "Guides", link: "/guides/what-is-sanpasjs" },
       { text: "Team", link: "/team" },
       { text: "Download", link: "/download" },
     ],

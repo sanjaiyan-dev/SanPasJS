@@ -25,7 +25,7 @@ features:
     details: Transpile the code expeditious and helps to kick off the pascal project swiftly.
   - icon: ✍🏽
     title: Write Once
-    details: Run in CLI and GUI with single code base.
+    details: Run in CLI and GUI with a single code base.
 ---
 
 <style>

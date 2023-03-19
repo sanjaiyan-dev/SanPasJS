@@ -8,12 +8,12 @@ hero:
 features:
   - icon: 🖥
     title: Windows
-    details: Binary file for 64 bit based windows PCs.
-    link: https://sanpasjs.web.app/SanPasJs/Windows/sanpasjs.exe
+    details: Binary file for 64 bit based Windows PCs.
+    link: http://localhost:5173/SanPasJs/Windows/sanpasjs.exe
     linkText: Download
   - icon: 🐧
     title: Linux
-    details: Binary file for 64 bit based linux PCs.
+    details: Binary file for 64 bit based Linux PCs.
     link: https://sanpasjs.web.app/SanPasJs/Linux/sanpasjs
     linkText: Download
   
