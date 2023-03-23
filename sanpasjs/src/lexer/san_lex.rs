@@ -52,7 +52,6 @@ impl SanjaiyanPascalCode {
             match san_current_token {
                 SanTokenKinds::PascalCodeBlockBegin => {
                     san_organized_tokens.push(SanTokenKinds::SanPascalNewLine);
-
                     san_organized_tokens.push(SanTokenKinds::PascalCodeBlockBegin);
                     san_organized_tokens.push(SanTokenKinds::SanPascalNewLine);
                 }
