@@ -1,5 +1,5 @@
 ---
-title: SanPasJs, Compile Command
+title: Compile Command
 ---
 
 # The `compile` sub-command

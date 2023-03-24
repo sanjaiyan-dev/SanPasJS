@@ -46,6 +46,9 @@ Currently some sytax won't be supported :worried: which includes
   <br/>
   etc...
 
+## Solve the problem together
+  Feel free to contact me via [emai](mailto:parthipankalayini@gmail.com) or [instagram](https://instagram.com/sanjaiyan_dev).
+
 <style>
     * {
         scroll-behavior: smooth;

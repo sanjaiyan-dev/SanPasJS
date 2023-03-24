@@ -1,5 +1,5 @@
 ---
-title: SanPasJs, New Command
+title: New Command
 ---
 
 # The `new` sub-command
