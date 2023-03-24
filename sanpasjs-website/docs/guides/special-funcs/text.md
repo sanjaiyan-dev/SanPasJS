@@ -5,7 +5,7 @@ title: TEXT Function
 # The `text`/`textln` functions
 
 Output your information in `Text` format. This internally uses `document.body.innerText`. 
-Using these function will escape HTML characters.
+Using these functions will escape HTML characters.
 
 ## Example
 

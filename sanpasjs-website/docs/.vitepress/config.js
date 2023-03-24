@@ -54,7 +54,7 @@ const sanjaiyanGuidesSideBar = [
   },
   {
     text: "Caveats",
-    link: "/guides/caveats/index"
+    link: "/guides/caveats/index",
   },
 ];
 

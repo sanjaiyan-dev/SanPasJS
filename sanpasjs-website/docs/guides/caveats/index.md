@@ -6,7 +6,7 @@ title: Caveats
 
 ## Issue when doing multiplication
 
-Currently `sanpasjs` doesn't support `*` character to multiply but, you can overcome this issue using `mul` key word.
+Currently, `sanpasjs` doesn't support `*` character to multiply but, you can overcome this issue using `mul` keyword.
 
 ```pascal:line-numbers
 program multiply_san(input,output);
@@ -24,7 +24,7 @@ end;
 
 ## Outputting function in next line
 
-Currently there is no affect in any function which ends with `ln`. To overcome this issue please type `"\n"`.
+Currently, there is no effect in any function which ends with `ln`. To overcome this issue please type `"\n"`.
 
 ```pascal:line-numbers{4,6}
 program nxt_line_san(input,output);
@@ -38,7 +38,7 @@ end;
 
 ## Lack of syntax support
 
-Currently some sytax won't be supported :worried: which includes
+Currently, some syntax won't be supported :worried: which includes
 
 - `switch` statement
 - `procedure` with more arguments (single argument supported)

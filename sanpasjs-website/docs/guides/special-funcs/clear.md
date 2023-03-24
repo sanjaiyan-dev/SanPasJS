@@ -4,7 +4,7 @@ title: CLEAR Function
 
 # The `clear`/`clean` functions
 
-Helps to clear the old outputs from screen. This internally uses `document.body.innerHTML = ""`.
+Helps to clear the old outputs from the screen. This internally uses `document.body.innerHTML = ""`.
 
 ## Example
 
