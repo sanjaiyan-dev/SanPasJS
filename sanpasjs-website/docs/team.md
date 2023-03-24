@@ -28,10 +28,16 @@ const members = [
       Our Team
     </template>
     <template #lead>
-      The development team of <i>SanPasJs</i> which is expected to expand soon 🤩📈🤩
+      The development team of <i>SanPasJs</i> which is expected to grow soon 🤩📈🤩
     </template>
   </VPTeamPageTitle>
   <VPTeamMembers
     :members="members"
   />
 </VPTeamPage>
+
+<style>
+    * {
+        scroll-behavior: smooth;
+    }
+</style>

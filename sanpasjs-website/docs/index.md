@@ -36,3 +36,9 @@ features:
 }
 
 </style>
+
+<style>
+    * {
+        scroll-behavior: smooth;
+    }
+</style>

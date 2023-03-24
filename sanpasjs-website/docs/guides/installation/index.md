@@ -10,7 +10,7 @@ title: Guide for Installation
 
 ## Why additional steps
 
-There are few easy steps needed to be followed to make the CLI tool available globally inside your PC.
+There are a few easy steps needed to be followed to make the CLI tool available globally inside your PC.
 
 1. First, you need to install the relevant binary file inside your local machine.
 2. Add the binary file's path to your local machine's env variable list.
@@ -28,3 +28,9 @@ Detailed guide for the above additional steps is given for [Window OS based PCs]
 :::warning
 Currently we have only documented the steps for _Windows_ based PCs
 :::
+
+<style>
+    * {
+        scroll-behavior: smooth;
+    }
+</style>

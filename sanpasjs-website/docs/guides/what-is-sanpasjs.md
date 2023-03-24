@@ -22,3 +22,9 @@ _SanPasJs_ aims to provide a great Developer Experience (DX) when working with w
 
 - _SanPasJs_ supports most of the [Turbo Pascal](https://en.wikipedia.org/wiki/Turbo_Pascal) based syntax.
 - Transpiles the code super fast while using very less runtime memory.
+
+<style>
+    * {
+        scroll-behavior: smooth;
+    }
+</style>

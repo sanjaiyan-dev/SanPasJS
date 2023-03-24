@@ -22,6 +22,40 @@ const sanjaiyanGuidesSideBar = [
       },
     ],
   },
+  {
+    text: "CLI Commands",
+    items: [
+      {
+        text: "new",
+        link: "/guides/commands/new",
+      },
+      {
+        text: "compile",
+        link: "/guides/commands/compile",
+      },
+    ],
+  },
+  {
+    text: "Special Function",
+    items: [
+      {
+        text: "HTML Output",
+        link: "/guides/special-funcs/html",
+      },
+      {
+        text: "Text Output",
+        link: "/guides/special-funcs/text",
+      },
+      {
+        text: "Clear Output",
+        link: "/guides/special-funcs/clear",
+      },
+    ],
+  },
+  {
+    text: "Caveats",
+    link: "/guides/caveats/index"
+  },
 ];
 
 export default {
